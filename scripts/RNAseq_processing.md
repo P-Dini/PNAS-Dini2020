@@ -32,3 +32,23 @@ samtools sort 1.F1R2.bam -o 1.F1R2.sorted.bam
 samtools sort 1.F2R1.bam -o 1.F2R1.sorted.bam
 
 ```
+
+## Group the RNA-seq reads for each offspring using Piccard v2.9.0 (GATK).
+
+```
+java -jar /home/pdi222/picard-2.9.0/picard.jar AddOrReplaceReadGroups I= 1.F1R2.sorted.bam O= Foal1_RNA.F1R2.sorted.grouped.bam RGID=4 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=1_Foal1_RNA_F1R2
+java -jar /home/pdi222/picard-2.9.0/picard.jar AddOrReplaceReadGroups I= 1.F2R1.sorted.bam O= Foal1_RNA.F2R1.sorted.grouped.bam RGID=4 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=2_Foal1_RNA_F2R1
+
+```
+
+## Index bams using samtools.
+
+```
+samtools index Foal1_RNA.F1R2.sorted.grouped.bam
+samtools index Foal1_RNA.F2R1.sorted.grouped.bam
+
+```
+
+
+
+
