@@ -4,3 +4,31 @@
 ```
 trim_galore --fastqc --paired --quality 30 --output_dir <> --adapter AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  --adapter2 AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT 1.fastq 2.fastq
 ```
+
+## Mapping using STAR v2.5.2
+
+```
+# Make genome reference.
+STAR --runMode genomeGenerate --genomeDir <>  --genomeFastaFiles GCA_002863925.1_EquCab3.0_genomic.fna
+
+# Mapping of trimmed reads.
+STAR --genomeDir GCA_002863925.1_EquCab3.0_genomic.fa --outSAMtype BAM SortedByCoordinate --outFileNamePrefix --readFilesIn <trimmed.1.fq> <trimmed.2.fq> --outFilterMismatchNmax 5 --outReadsUnmapped Fastx.
+```
+
+## Phasing of mapped RNA-seq reads using samtools v1.3.1
+
+```
+samtools view -b -h 1.bam -f 64 | samtools view -h  - -f 32 > 1.F1R2.sam 
+samtools view -b -h 1.bam -f 128 | samtools view  - -f 16 >> 1.F1R2.sam
+samtools view -b -h 1.bam -f 128 | samtools view -h  - -f 32 > 1.F2R1.sam 
+samtools view -b -h 1.bam -f 64 | samtools view  - -f 16 >> 1.F2R1.sam
+
+
+samtools view -S -b 1.F1R2.sam > 1.F1R2.bam
+samtools view -S -b 1.F2R1.sam > 1.F2R1.bam
+
+
+samtools sort 1.F1R2.bam -o 1.F1R2.sorted.bam
+samtools sort 1.F2R1.bam -o 1.F2R1.sorted.bam
+
+```
